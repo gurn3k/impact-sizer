@@ -1,5 +1,7 @@
 # Impact Sizer
 
+[![tests](https://github.com/gurn3k/impact-sizer/actions/workflows/tests.yml/badge.svg)](https://github.com/gurn3k/impact-sizer/actions/workflows/tests.yml)
+
 **Size a product idea as a range, find the assumption that matters most, and show your working.**
 
 PMs size ideas as one number in a spreadsheet cell. The reviewer can't see how uncertain it is or which assumption it rests on. Impact Sizer takes a low, base and high value for each input and shows:
@@ -11,6 +13,8 @@ PMs size ideas as one number in a spreadsheet cell. The reviewer can't see how u
 
 **The rule it's built around: every number shows the arithmetic that produced it.** You can redo any result with a phone calculator. If the inputs can't produce a trustworthy number, the page shows none and says which field to fix.
 
+![Impact Sizer with the worked example: inputs on the left, a $120,000 base estimate with its arithmetic and the worst-to-best case on the right](docs/images/screenshot.png)
+
 ## The formula
 Annual impact = users reached × share who use it × lift in value per user × value per user per year.
 
@@ -18,13 +22,13 @@ The worked example: 200,000 users × 10% × 5% × $120 = **$120,000 a year**, wi
 
 ## How I know it's right
 - **Hand-computed answers first.** The answers in `fixtures/worked-examples.json` were worked out by hand before any code existed, including a no-uncertainty control. The tests check the code against them.
-- **48 automated tests:**
+- **50 automated tests:**
   - every promise in the PRD
   - a 500-case random check that low ≤ base ≤ high
   - a check that the page's pre-filled example matches the fixture
   - a regression test for each finding
 - **An adversarial pass** found six problems, all fixed. The worst: `0,5` was silently read as 5. See [docs/FINDINGS.md](docs/FINDINGS.md).
-- **An owner review with a real sizing** found three more, all fixed. The worst: a percentage typed as a fraction (`0.017` for 1.7%) gave a result 100 times too small. The page now warns.
+- **An owner review with a real sizing** found three more, and a pre-ship locale check found a fourth, all fixed. The worst: a percentage typed as a fraction (`0.017` for 1.7%) gave a result 100 times too small. The page now warns.
 
 ## Limits
 - **One formula shape.** Cost savings and time saved don't fit it yet.

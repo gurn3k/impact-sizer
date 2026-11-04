@@ -25,8 +25,11 @@ export function validate(inputs) {
     for (const s of SCENARIOS) {
       const v = row?.[s];
       if (v === null || v === undefined || v === "") problems.push(`${s} is missing`);
+      else if (typeof v === "string" && AMBIGUOUS_MONEY_RE.test(v.trim())) problems.push(`${s} is ambiguous: a dot is a decimal point here, so ${v.trim()} would mean ${AMBIGUOUS_AS_DECIMAL(v)}. Type 1,200 or 1200 for thousands, or two decimals like 1.20 for cents`);
       else if (!isNum(v)) problems.push(`${s} is not a number (use digits, like 1,250.5)`);
       else if (v < 0) problems.push(`${s} can't be negative`);
+      // Finding 10: "1.200" (European for 1,200) parses as 1.2. A count of users is whole, so refuse it out loud.
+      else if (def.kind === "count" && !Number.isInteger(v)) problems.push(`${s} must be a whole number. A dot is a decimal point here, so type thousands as 1,200 or 1200`);
       else if (def.max !== undefined && v > def.max) problems.push(`${s} can't be more than ${def.max}%`);
     }
     if (problems.length === 0) {
@@ -117,9 +120,17 @@ export function size(inputs) {
 // Commas count only as thousands separators in the right places, so "0,5" is refused rather than read as 5
 // (finding 1), and only decimal digits are accepted, so "0x10" is refused rather than read as 16 (finding 2).
 const NUMBER_RE = /^([+-]?)((?:\d{1,3}(?:,\d{3})+|\d+)?(?:\.\d*)?)([eE][+-]?\d+)?$/;
-export function parseField(text) {
+// Finding 10: "$1.200" is $1,200 to a European reader and $1.20 to an American one. Money is
+// never typed with exactly three decimals, so that shape is refused rather than guessed.
+// A leading 0 ("0.125") can't be a thousands group, so it stays a plain decimal.
+const AMBIGUOUS_MONEY_RE = /^\$?\s*[1-9]\d{0,2}\.\d{3}$/;
+const AMBIGUOUS_AS_DECIMAL = (text) => fmtMoney(Number(String(text).trim().replace(/^\$\s*/, "")));
+
+// `kind` is the input's kind from INPUTS. Only money needs it, for the ambiguity check above.
+export function parseField(text, kind) {
   const t = String(text).trim().replace(/^\$\s*/, "").replace(/\s*%$/, "");
   if (t === "") return null;
+  if (kind === "money" && AMBIGUOUS_MONEY_RE.test(String(text).trim())) return String(text);
   const m = t.match(NUMBER_RE);
   if (!m || !/\d/.test(m[2])) return String(text);
   const n = Number(m[1] + m[2].replace(/,/g, "") + (m[3] ?? ""));

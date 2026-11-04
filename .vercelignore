@@ -1,0 +1,10 @@
+# Serve only the page. Everything else (tests, docs, scripts, fixtures) stays out of the site.
+/*
+!/index.html
+!/app.js
+!/style.css
+!/src
+!/gurn3k-gurn.svg
+!/gurn3k-3k.svg
+!/share.png
+!/vercel.json

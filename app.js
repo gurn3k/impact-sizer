@@ -1,12 +1,13 @@
-import { size, summarize, arithmetic, fmtMoney, parseField, copyWithTimeout } from "./src/sizing.js";
+import { size, summarize, arithmetic, fmtMoney, parseField, copyWithTimeout, INPUTS } from "./src/sizing.js";
 
 const $ = (id) => document.getElementById(id);
 const fields = [...document.querySelectorAll("input[data-key]")];
+const kindOf = Object.fromEntries(INPUTS.map((d) => [d.key, d.kind]));
 
 function readInputs() {
   const inputs = {};
   for (const el of fields) {
-    (inputs[el.dataset.key] ??= {})[el.dataset.s] = parseField(el.value);
+    (inputs[el.dataset.key] ??= {})[el.dataset.s] = parseField(el.value, kindOf[el.dataset.key]);
   }
   return inputs;
 }

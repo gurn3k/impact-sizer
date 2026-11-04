@@ -95,6 +95,12 @@ Built from public figures, using monthly active users throughout.
 - **Seriousness:** low. The page still failed closed.
 - **Status:** Fixed. It now says "low is above base and high". Re-checked in Chrome. Test: finding 9.
 
+## 10. A European thousands dot was read as a decimal
+- **Steps:** set Users reached base to `1.200`, meaning 1,200 in much of Europe.
+- **What happened:** it was read as 1.2 users, a result a thousand times too small, with no warning. `$1.200` as value per user was read as $1.20 in the same way.
+- **Seriousness:** high. A wrong number looks right. It was found in the pre-ship check of locale handling, after finding 1 covered decimal commas but not thousands dots.
+- **Status:** Fixed. Users reached must be a whole number, and the page says to type thousands as 1,200 or 1200. A money value with exactly three decimals (`1.200`, `$1.200`) is refused as ambiguous and the page asks for 1,200 or 1.20. Percentages are unchanged, because 1.234% is a real value. Test: finding 10.
+
 ## Not tested
 - **A real phone:** only DevTools emulation was used.
 - **Screen readers.**

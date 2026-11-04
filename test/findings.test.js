@@ -118,3 +118,36 @@ test("finding 9: a low above both base and high names both", () => {
   assert.deepEqual(problems({ low: 5, base: 20, high: 3 }), ["low is above high", "base is above high"]);
   assert.equal(problems({ low: 3, base: 10, high: 15 }), undefined);
 });
+
+test("finding 10: a European thousands dot is refused out loud, never read as a decimal", () => {
+  const base = { reach: { low: 1000, base: 1200, high: 1500 }, adoption: { low: 5, base: 10, high: 15 },
+    lift: { low: 2, base: 5, high: 10 }, value: { low: 100, base: 120, high: 140 } };
+  const problemsFor = (key, s, text) => {
+    const def = { reach: "count", adoption: "percent", lift: "percent", value: "money" }[key];
+    const inputs = structuredClone(base);
+    inputs[key][s] = parseField(text, def);
+    return validate(inputs).find((e) => e.field === key)?.problems ?? [];
+  };
+  // users: "1.200" parses as 1.2, which isn't a whole number of users
+  assert.match(problemsFor("reach", "base", "1.200").join(), /base must be a whole number\. A dot is a decimal point here, so type thousands as 1,200 or 1200/);
+  assert.equal(size({ ...base, reach: { low: 1000, base: parseField("1.200", "count"), high: 1500 } }).ok, false);
+  // money: exactly three decimals is ambiguous, with or without "$"
+  for (const t of ["1.200", "$1.200", "120.000"]) {
+    assert.match(problemsFor("value", "base", t).join(), /is ambiguous: a dot is a decimal point here/, t);
+  }
+  assert.match(problemsFor("value", "base", "1.200").join(), /so 1\.200 would mean \$1\.20\./);
+  // unambiguous forms still work
+  assert.deepEqual(problemsFor("reach", "base", "1,200"), []);
+  assert.deepEqual(problemsFor("value", "base", "120.50"), []);
+  assert.deepEqual(problemsFor("value", "low", "0.125"), []);
+  assert.deepEqual(problemsFor("value", "high", "1200"), []);
+  // percentages keep three decimals: 1.234% is a real lift
+  assert.deepEqual(problemsFor("lift", "low", "1.234"), []);
+  // without a kind, parsing is unchanged
+  assert.equal(parseField("1.200"), 1.2);
+});
+
+test("finding 10: the page passes each field's kind to the parser", () => {
+  const app = readFileSync(new URL("../app.js", import.meta.url), "utf8");
+  assert.match(app, /parseField\(el\.value, kindOf\[el\.dataset\.key\]\)/);
+});
