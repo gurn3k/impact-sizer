@@ -1,0 +1,14 @@
+{
+  "name": "impact-sizer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Size a product idea with low, base and high inputs, and see the arithmetic behind every number.",
+  "scripts": {
+    "test": "node --test",
+    "check": "node scripts/check.mjs",
+    "start": "node scripts/serve.mjs"
+  },
+  "engines": { "node": ">=22" },
+  "license": "MIT"
+}

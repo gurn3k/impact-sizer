@@ -1,0 +1,77 @@
+{
+  "_note": "Answers computed by hand before any code existed. Percent inputs are entered as percents (10 means 10%).",
+  "valid": [
+    {
+      "id": "planted-range",
+      "about": "The pre-filled example. Wide ranges, so every input has a different swing.",
+      "inputs": {
+        "reach":    { "low": 150000, "base": 200000, "high": 250000 },
+        "adoption": { "low": 5,      "base": 10,     "high": 15 },
+        "lift":     { "low": 2,      "base": 5,      "high": 8 },
+        "value":    { "low": 100,    "base": 120,    "high": 140 }
+      },
+      "expected": {
+        "low": 15000,
+        "base": 120000,
+        "high": 420000,
+        "sensitivity": [
+          { "key": "lift",     "atLow": 48000,  "atHigh": 192000, "swing": 144000 },
+          { "key": "adoption", "atLow": 60000,  "atHigh": 180000, "swing": 120000 },
+          { "key": "reach",    "atLow": 90000,  "atHigh": 150000, "swing": 60000 },
+          { "key": "value",    "atLow": 100000, "atHigh": 140000, "swing": 40000 }
+        ],
+        "driver": "lift"
+      },
+      "working": [
+        "low  = 150,000 x 0.05 x 0.02 x 100 = 7,500 x 0.02 x 100 = 150 x 100 = 15,000",
+        "base = 200,000 x 0.10 x 0.05 x 120 = 20,000 x 0.05 x 120 = 1,000 x 120 = 120,000",
+        "high = 250,000 x 0.15 x 0.08 x 140 = 37,500 x 0.08 x 140 = 3,000 x 140 = 420,000",
+        "lift swing: others at base = 200,000 x 0.10 x 120 = 2,400,000; x0.02 = 48,000; x0.08 = 192,000"
+      ]
+    },
+    {
+      "id": "clean-no-uncertainty",
+      "about": "Control: low = base = high everywhere. Span must collapse to one value and every swing must be 0.",
+      "inputs": {
+        "reach":    { "low": 1000, "base": 1000, "high": 1000 },
+        "adoption": { "low": 50,   "base": 50,   "high": 50 },
+        "lift":     { "low": 10,   "base": 10,   "high": 10 },
+        "value":    { "low": 10,   "base": 10,   "high": 10 }
+      },
+      "expected": {
+        "low": 500, "base": 500, "high": 500,
+        "sensitivity": [
+          { "key": "reach",    "atLow": 500, "atHigh": 500, "swing": 0 },
+          { "key": "adoption", "atLow": 500, "atHigh": 500, "swing": 0 },
+          { "key": "lift",     "atLow": 500, "atHigh": 500, "swing": 0 },
+          { "key": "value",    "atLow": 500, "atHigh": 500, "swing": 0 }
+        ],
+        "driver": null
+      },
+      "working": ["1,000 x 0.5 x 0.1 x 10 = 500"]
+    },
+    {
+      "id": "lift-over-100",
+      "about": "Lift above 100% is allowed (a feature can more than double value).",
+      "inputs": {
+        "reach":    { "low": 10,  "base": 10,  "high": 10 },
+        "adoption": { "low": 100, "base": 100, "high": 100 },
+        "lift":     { "low": 200, "base": 200, "high": 200 },
+        "value":    { "low": 5,   "base": 5,   "high": 5 }
+      },
+      "expected": { "low": 100, "base": 100, "high": 100, "driver": null },
+      "working": ["10 x 1 x 2 x 5 = 100"]
+    }
+  ],
+  "invalid": [
+    { "id": "low-above-base", "patch": { "reach": { "low": 300000, "base": 200000, "high": 250000 } }, "errorFields": ["reach"] },
+    { "id": "base-above-high", "patch": { "value": { "low": 100, "base": 150, "high": 140 } }, "errorFields": ["value"] },
+    { "id": "adoption-over-100", "patch": { "adoption": { "low": 5, "base": 10, "high": 120 } }, "errorFields": ["adoption"] },
+    { "id": "negative-reach", "patch": { "reach": { "low": -1, "base": 200000, "high": 250000 } }, "errorFields": ["reach"] },
+    { "id": "negative-lift", "patch": { "lift": { "low": -5, "base": 5, "high": 8 } }, "errorFields": ["lift"] },
+    { "id": "missing-value", "patch": { "value": { "low": null, "base": 120, "high": 140 } }, "errorFields": ["value"] },
+    { "id": "not-a-number", "patch": { "adoption": { "low": "ten", "base": 10, "high": 15 } }, "errorFields": ["adoption"] },
+    { "id": "two-bad-fields", "patch": { "reach": { "low": -1, "base": 200000, "high": 250000 }, "lift": { "low": 2, "base": 9, "high": 8 } }, "errorFields": ["reach", "lift"] },
+    { "id": "too-large", "patch": { "reach": { "low": 1e15, "base": 1e15, "high": 1e15 }, "value": { "low": 1e6, "base": 1e6, "high": 1e6 } }, "errorFields": ["result"] }
+  ]
+}

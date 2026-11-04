@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impact Sizer</title>
+  <meta name="description" content="Size a product idea with low, base and high inputs, and see the arithmetic behind every number.">
+  <meta property="og:title" content="Impact Sizer">
+  <meta property="og:description" content="Size a product idea as a range, find the assumption that matters most, and show your working.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E3B33'/%3E%3Crect x='7' y='18' width='4' height='8' fill='%23fff'/%3E%3Crect x='14' y='12' width='4' height='14' fill='%23fff'/%3E%3Crect x='21' y='6' width='4' height='20' fill='%23fff'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="top">
+    <h1>Impact Sizer</h1>
+    <p class="lede">Size an idea as a range, see which assumption moves it most, and show your working. Every number below comes with the arithmetic that produced it.</p>
+  </header>
+
+  <main class="layout">
+    <section class="card" aria-labelledby="inputs-h">
+      <h2 id="inputs-h">Your assumptions</h2>
+      <p class="hint">Annual impact = users reached × share who use it × lift in value per user × value per user per year. Enter a low, base and high for each.</p>
+      <form id="form" novalidate>
+        <table class="grid">
+          <thead><tr><th scope="col">Input</th><th scope="col">Low</th><th scope="col">Base</th><th scope="col">High</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Users reached<span class="unit">people</span></th>
+              <td><input data-key="reach" data-s="low" inputmode="decimal" aria-label="Users reached, low" value="150000"></td>
+              <td><input data-key="reach" data-s="base" inputmode="decimal" aria-label="Users reached, base" value="200000"></td>
+              <td><input data-key="reach" data-s="high" inputmode="decimal" aria-label="Users reached, high" value="250000"></td></tr>
+            <tr><th scope="row">Share who use it<span class="unit">%, 0 to 100</span></th>
+              <td><input data-key="adoption" data-s="low" inputmode="decimal" aria-label="Share who use it, low" value="5"></td>
+              <td><input data-key="adoption" data-s="base" inputmode="decimal" aria-label="Share who use it, base" value="10"></td>
+              <td><input data-key="adoption" data-s="high" inputmode="decimal" aria-label="Share who use it, high" value="15"></td></tr>
+            <tr><th scope="row">Lift in value per user<span class="unit">%</span></th>
+              <td><input data-key="lift" data-s="low" inputmode="decimal" aria-label="Lift in value per user, low" value="2"></td>
+              <td><input data-key="lift" data-s="base" inputmode="decimal" aria-label="Lift in value per user, base" value="5"></td>
+              <td><input data-key="lift" data-s="high" inputmode="decimal" aria-label="Lift in value per user, high" value="8"></td></tr>
+            <tr><th scope="row">Value per user per year<span class="unit">$</span></th>
+              <td><input data-key="value" data-s="low" inputmode="decimal" aria-label="Value per user per year, low" value="100"></td>
+              <td><input data-key="value" data-s="base" inputmode="decimal" aria-label="Value per user per year, base" value="120"></td>
+              <td><input data-key="value" data-s="high" inputmode="decimal" aria-label="Value per user per year, high" value="140"></td></tr>
+          </tbody>
+        </table>
+      </form>
+      <p class="hint">The example: a feature for 200,000 users that 10% adopt, lifting their $120 a year by 5%.</p>
+    </section>
+
+    <section class="card" aria-labelledby="results-h" aria-live="polite">
+      <h2 id="results-h">Result</h2>
+
+      <div id="errors" class="errors" hidden>
+        <p><strong>No result yet.</strong> Fix these and the numbers will appear:</p>
+        <ul id="error-list"></ul>
+      </div>
+
+      <div id="warnings" class="warnings" role="status" hidden>
+        <p><strong>Check this before you use the number:</strong></p>
+        <ul id="warning-list"></ul>
+      </div>
+
+      <div id="results">
+        <p class="big"><span id="base"></span><span class="per"> a year</span></p>
+        <p class="math" id="base-math"></p>
+        <p class="span">Worst to best case: <strong id="low"></strong> to <strong id="high"></strong></p>
+        <p class="math" id="low-math"></p>
+        <p class="math" id="high-math"></p>
+        <p class="note">The span puts every input at its low or high end together, which rarely happens. Read it as the outer limits, not a likely range.</p>
+
+        <h3>Which assumption matters most</h3>
+        <p class="hint">Each bar moves one input from low to high and keeps the others at base. The line marks the base estimate.</p>
+        <div id="swings" class="swings"></div>
+
+        <h3>Summary for your doc</h3>
+        <p id="summary" class="summary"></p>
+        <button type="button" id="copy">Copy summary</button>
+        <span id="copied" class="copied" role="status"></span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot">Nothing you type leaves your browser. <span class="maker">Built by <a href="https://www.gurn3k.com" target="_blank" rel="noopener" aria-label="gurn3k"><span class="maker-mark"></span></a></span></footer>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

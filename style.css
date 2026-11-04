@@ -1,0 +1,82 @@
+:root {
+  --bg: #f6f5f1; --card: #ffffff; --ink: #1c1f1e; --muted: #5d6662; --line: #dcdcd4;
+  --accent: #0e3b33; --bar: #7fa89c; --bar-strong: #0e3b33; --mark: #c2410c;
+  --err-bg: #fdf0ec; --err-ink: #8a2c0d; --input: #fbfbf8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #121514; --card: #1b1f1e; --ink: #e9ece9; --muted: #a2aba7; --line: #333a38;
+    --accent: #8fd3c0; --bar: #4f7d71; --bar-strong: #8fd3c0; --mark: #fb923c;
+    --err-bg: #3a1d14; --err-ink: #fbc4ae; --input: #141817;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #121514; --card: #1b1f1e; --ink: #e9ece9; --muted: #a2aba7; --line: #333a38;
+  --accent: #8fd3c0; --bar: #4f7d71; --bar-strong: #8fd3c0; --mark: #fb923c;
+  --err-bg: #3a1d14; --err-ink: #fbc4ae; --input: #141817;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
+.top, .layout, .foot { max-width: 1100px; margin: 0 auto; padding: 0 16px; }
+.top { padding-top: 32px; }
+h1 { margin: 0 0 4px; font-size: 1.9rem; color: var(--accent); letter-spacing: -0.01em; }
+.lede { margin: 0 0 24px; color: var(--muted); max-width: 60ch; }
+.layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 20px; }
+h2 { margin: 0 0 8px; font-size: 1.15rem; }
+h3 { margin: 24px 0 4px; font-size: 1rem; }
+.hint, .note { color: var(--muted); font-size: 0.9rem; margin: 4px 0 12px; }
+
+.grid { width: 100%; border-collapse: collapse; }
+.grid th, .grid td { padding: 6px 4px; text-align: left; vertical-align: middle; }
+.grid thead th { font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.grid tbody th { font-weight: 600; font-size: 0.95rem; width: 38%; }
+.unit { display: block; font-weight: 400; font-size: 0.8rem; color: var(--muted); }
+.grid input { width: 100%; min-width: 0; padding: 8px; font: inherit; font-variant-numeric: tabular-nums; color: var(--ink); background: var(--input); border: 1px solid var(--line); border-radius: 8px; }
+.grid input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.grid input[aria-invalid] { border-color: var(--mark); background: var(--err-bg); }
+@media (max-width: 480px) {
+  .grid thead { display: none; }
+  .grid tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .grid tbody th { grid-column: 1 / -1; width: auto; padding: 0; }
+  .grid td { padding: 0; }
+}
+
+.errors { background: var(--err-bg); color: var(--err-ink); border-radius: 8px; padding: 12px 16px; }
+.errors p { margin: 0 0 4px; }
+.errors ul { margin: 0; padding-left: 20px; }
+.warnings { border: 1px solid var(--mark); color: var(--ink); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; }
+.warnings p { margin: 0 0 4px; }
+.warnings ul { margin: 0; padding-left: 20px; }
+
+.big { margin: 0; font-size: 2.4rem; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; line-height: 1.2; overflow-wrap: anywhere; }
+.per { font-size: 1rem; font-weight: 400; color: var(--muted); }
+.span { margin: 16px 0 0; }
+.math { margin: 2px 0; font: 0.85rem/1.4 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--muted); overflow-wrap: anywhere; }
+
+.swings { display: grid; gap: 12px; margin-top: 8px; }
+.swing-label { font-size: 0.9rem; font-weight: 600; }
+.swing.driver .swing-label { color: var(--accent); }
+.track { position: relative; height: 14px; background: var(--input); border: 1px solid var(--line); border-radius: 4px; margin: 4px 0 2px; }
+.bar { position: absolute; top: 0; bottom: 0; background: var(--bar); border-radius: 3px; }
+.swing.driver .bar { background: var(--bar-strong); }
+.mark { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; background: var(--mark); }
+.swing-vals { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+.summary { background: var(--input); border: 1px solid var(--line); border-radius: 8px; padding: 12px; margin: 8px 0; }
+button { font: inherit; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--card); cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--mark); outline-offset: 2px; }
+.copied { margin-left: 8px; font-size: 0.9rem; color: var(--muted); }
+.foot { padding-top: 24px; padding-bottom: 32px; color: var(--muted); font-size: 0.85rem; }
+.foot a { color: var(--accent); }
+/* The gurn3k wordmark, as on the other builds: "gurn" in ink, "3k" in the accent colour.
+   Both follow dark mode, and on hover the whole wordmark takes the accent. */
+.maker { display: inline-flex; align-items: center; gap: 8px; }
+.foot .maker a { display: block; color: var(--ink); }
+.foot .maker a:hover, .foot .maker a:focus-visible { color: var(--accent); }
+.maker-mark { position: relative; display: block; width: 52px; height: 14px; }
+.maker-mark::before, .maker-mark::after { content: ""; position: absolute; inset: 0; }
+.maker-mark::before { background: currentColor; -webkit-mask: url(gurn3k-gurn.svg) center / contain no-repeat; mask: url(gurn3k-gurn.svg) center / contain no-repeat; }
+.maker-mark::after { background: var(--accent); -webkit-mask: url(gurn3k-3k.svg) center / contain no-repeat; mask: url(gurn3k-3k.svg) center / contain no-repeat; }
