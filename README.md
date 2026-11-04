@@ -4,6 +4,8 @@
 
 **Size a product idea as a range, find the assumption that matters most, and show your working.**
 
+**Try it:** https://impact-sizer.vercel.app
+
 PMs size ideas as one number in a spreadsheet cell. The reviewer can't see how uncertain it is or which assumption it rests on. Impact Sizer takes a low, base and high value for each input and shows:
 
 - the base estimate, with the arithmetic behind it

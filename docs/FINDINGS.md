@@ -101,8 +101,13 @@ Built from public figures, using monthly active users throughout.
 - **Seriousness:** high. A wrong number looks right. It was found in the pre-ship check of locale handling, after finding 1 covered decimal commas but not thousands dots.
 - **Status:** Fixed. Users reached must be a whole number, and the page says to type thousands as 1,200 or 1200. A money value with exactly three decimals (`1.200`, `$1.200`) is refused as ambiguous and the page asks for 1,200 or 1.20. Percentages are unchanged, because 1.234% is a real value. Test: finding 10.
 
+## Live pass on https://impact-sizer.vercel.app (2026-11-04)
+- **Inputs tried (18 cases):** the default example, an empty field, tiny (reach 1), huge (1e20), words, Arabic-Indic digits, `0,5`, `1.200`, `$1.200`, `1 200`, `0x10`, markup with an `onerror` handler, adoption 101%, negative lift, percentages typed as fractions, all-zero adoption, a low above base and high, and `Infinity`.
+- **Result:** every case behaved as on the local server. Bad input failed closed and named its field, fractions warned but still showed a result, and all-zero gave $0. The markup handler never ran.
+- **The site itself:** only the page files are served. Docs, tests, config and hidden files return 404. The security headers (CSP, nosniff, referrer and permissions policies) are live, and the page loads with no console errors under the CSP.
+- **Not repeated live:** the copy button (an automated click hangs the clipboard; the owner checked it by hand locally) and phone width.
+
 ## Not tested
 - **A real phone:** only DevTools emulation was used.
 - **Screen readers.**
 - **Browsers other than Chrome.**
-- **The deployed site,** because there isn't one yet.
